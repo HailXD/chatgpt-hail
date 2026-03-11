@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         script
 // @namespace    chatgpt-hail
-// @version      1.0.0
+// @version      1.0.1
 // @match        https://chatgpt.com/*
 // @grant        none
 // @run-at       document-start
@@ -11,7 +11,7 @@
     'use strict';
 
     const TARGET_PATH = '/';
-    const TARGET_SEARCH = '?hail';
+    const TARGET_SEARCH = '?h';
     const TARGET_NAME = 'hail';
     const CHECK_INTERVAL_MS = 500;
     const TIMEOUT_MS = 30000;
