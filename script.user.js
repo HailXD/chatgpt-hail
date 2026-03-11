@@ -1,10 +1,7 @@
 // ==UserScript==
-// @name         script
-// @namespace    chatgpt-hail
-// @version      1.0.1
+// @name         chatgpt-hail
+// @version      1.0.2
 // @match        https://chatgpt.com/*
-// @grant        none
-// @run-at       document-start
 // ==/UserScript==
 
 (function () {
