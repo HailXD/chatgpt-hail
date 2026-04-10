@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         chatgpt-hail
-// @version      1.0.3
+// @version      1.0.4
 // @match        https://chatgpt.com/?h
 // ==/UserScript==
 
@@ -36,16 +36,6 @@
         }) ?? null;
     }
 
-    function collapseProjects() {
-        const link = findTargetLink();
-        if (!link) {
-            return;
-        }
-        const section = link.closest('div[class*="sidebar-expando-section"]');
-        const toggle = section?.querySelector('button[aria-expanded="true"]');
-        toggle?.click();
-    }
-
     function stopWatching() {
         if (stopObserver) {
             stopObserver();
@@ -58,7 +48,6 @@
         if (!link) {
             return false;
         }
-        collapseProjects();
         link.setAttribute(CLICKED_KEY, 'true');
         link.click();
         stopWatching();
