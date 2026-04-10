@@ -1,23 +1,17 @@
 // ==UserScript==
 // @name         chatgpt-hail
-// @version      1.0.2
-// @match        https://chatgpt.com/*
+// @version      1.0.3
+// @match        https://chatgpt.com/?h
 // ==/UserScript==
 
 (function () {
     'use strict';
 
-    const TARGET_PATH = '/';
-    const TARGET_SEARCH = '?h';
     const TARGET_NAME = 'hail';
     const CHECK_INTERVAL_MS = 500;
     const TIMEOUT_MS = 30000;
     const CLICKED_KEY = 'data-hail-clicked';
     let stopObserver = null;
-
-    function isTargetUrl() {
-        return location.pathname === TARGET_PATH && location.search === TARGET_SEARCH;
-    }
 
     function getProjectLinks() {
         const headings = Array.from(document.querySelectorAll('h2.__menu-label'));
@@ -42,6 +36,16 @@
         }) ?? null;
     }
 
+    function collapseProjects() {
+        const link = findTargetLink();
+        if (!link) {
+            return;
+        }
+        const section = link.closest('div[class*="sidebar-expando-section"]');
+        const toggle = section?.querySelector('button[aria-expanded="true"]');
+        toggle?.click();
+    }
+
     function stopWatching() {
         if (stopObserver) {
             stopObserver();
@@ -50,14 +54,11 @@
     }
 
     function tryClickTarget() {
-        if (!isTargetUrl()) {
-            stopWatching();
-            return true;
-        }
         const link = findTargetLink();
         if (!link) {
             return false;
         }
+        collapseProjects();
         link.setAttribute(CLICKED_KEY, 'true');
         link.click();
         stopWatching();
@@ -66,9 +67,6 @@
 
     function watchForTarget() {
         stopWatching();
-        if (!isTargetUrl()) {
-            return;
-        }
         const startedAt = Date.now();
         const intervalId = window.setInterval(() => {
             if (tryClickTarget() || Date.now() - startedAt >= TIMEOUT_MS) {
@@ -94,24 +92,6 @@
         tryClickTarget();
     }
 
-    function handleUrlChange() {
-        watchForTarget();
-    }
-
-    const pushState = history.pushState.bind(history);
-    const replaceState = history.replaceState.bind(history);
-
-    history.pushState = function (...args) {
-        pushState(...args);
-        handleUrlChange();
-    };
-
-    history.replaceState = function (...args) {
-        replaceState(...args);
-        handleUrlChange();
-    };
-
-    window.addEventListener('popstate', handleUrlChange);
-    window.addEventListener('DOMContentLoaded', handleUrlChange);
-    handleUrlChange();
+    window.addEventListener('DOMContentLoaded', watchForTarget);
+    watchForTarget();
 })();
