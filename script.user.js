@@ -49,7 +49,12 @@
             return false;
         }
         link.setAttribute(CLICKED_KEY, 'true');
-        link.click();
+        const href = link.getAttribute('href');
+        if (href) {
+            window.location.href = new URL(href, window.location.origin).href;
+        } else {
+            link.click();
+        }
         stopWatching();
         return true;
     }
